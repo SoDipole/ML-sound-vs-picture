@@ -6,20 +6,19 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
 def parse_sounds(path):
-    raw_sounds = []
-    labels = []
+    features, labels = np.empty((0,193)), np.empty(0)
     for filename in os.listdir(path):
         if filename.startswith(""):
             print(filename)
             X, sample_rate = librosa.load(path+filename)
             mfccs,chroma,mel,contrast,tonnetz = extract_feature(X, sample_rate)
+            
             ext_features = np.hstack([mfccs,chroma,mel,contrast,tonnetz])
             features = np.vstack([features,ext_features])            
             
             label = filename.split(".")[0].split("_")[2]
-            raw_sounds.append(np.array(X, dtype=float))
-            labels.append(label)
-    return raw_sounds, labels
+            labels = np.append(labels, label)
+    return np.array(features), np.array(labels, dtype = np.int)
 
 def extract_feature(X, sample_rate):
     stft = np.abs(librosa.stft(X))
@@ -45,11 +44,11 @@ test_features, test_labels = parse_sounds(path_2)
 
 clf = RandomForestClassifier(n_jobs=2, random_state=0)
 
-clf.fit(raw_sounds, labels)
+clf.fit(train_features, train_labels)
 
 print(clf.feature_importances_)
 
-print(clf.predict(test_sounds))
+print(clf.predict(test_features))
 print(test_labels)
 
 #y = raw_sounds[5]
