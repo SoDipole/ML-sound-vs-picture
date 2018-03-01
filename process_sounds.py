@@ -4,6 +4,7 @@ import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.tree import DecisionTreeClassifier
 
 def parse_sounds(path):
     features, labels = np.empty((0,193)), np.empty(0)
@@ -30,23 +31,22 @@ def extract_feature(X, sample_rate):
     sr=sample_rate).T,axis=0)
     return mfccs,chroma,mel,contrast,tonnetz
 
-def plot_waves(sound_names,raw_sounds):
-    for n,f in zip(sound_names,raw_sounds):
+def plot_waves(raw_sounds):
+    for f in raw_sounds:
         librosa.display.waveplot(f)
-        plt.title(n)
         plt.show()
 
-path_1 = "data/test_mic/"
-path_2 = "data/test_phone/"
+path_1 = "data/test_mic/train/"
+path_2 = "data/test_mic/test/"
+#path_2 = "data/test_phone/"
 
 train_features, train_labels = parse_sounds(path_1)
 test_features, test_labels = parse_sounds(path_2)
 
-clf = RandomForestClassifier(n_jobs=2, random_state=0)
+#clf = RandomForestClassifier(n_jobs=2, random_state=0)
+clf = DecisionTreeClassifier(random_state=0)
 
 clf.fit(train_features, train_labels)
-
-print(clf.feature_importances_)
 
 print(clf.predict(test_features))
 print(test_labels)
