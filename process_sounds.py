@@ -3,8 +3,8 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.neighbors import KNeighborsClassifier
 
 def parse_sounds(path):
     features, labels = np.empty((0,193)), np.empty(0)
@@ -12,6 +12,12 @@ def parse_sounds(path):
         if filename.startswith(""):
             print(filename)
             X, sample_rate = librosa.load(path+filename)
+            plot_waves(X)            
+
+            X, index = librosa.effects.trim(X, top_db=20)
+            print(index)
+            plot_waves(X)
+            
             mfccs,chroma,mel,contrast,tonnetz = extract_feature(X, sample_rate)
             
             ext_features = np.hstack([mfccs,chroma,mel,contrast,tonnetz])
@@ -23,18 +29,21 @@ def parse_sounds(path):
 
 def extract_feature(X, sample_rate):
     stft = np.abs(librosa.stft(X))
-    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T,axis=0)
-    chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T,axis=0)
-    mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T,axis=0)
-    contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T,axis=0)
-    tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X),
-    sr=sample_rate).T,axis=0)
+    mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=40).T,
+                    axis=0)
+    chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=sample_rate).T,
+                     axis=0)
+    mel = np.mean(librosa.feature.melspectrogram(X, sr=sample_rate).T,
+                  axis=0)
+    contrast = np.mean(librosa.feature.spectral_contrast(S=stft, sr=sample_rate).T,
+                       axis=0)
+    tonnetz = np.mean(librosa.feature.tonnetz(y=librosa.effects.harmonic(X), 
+                                              sr=sample_rate).T,axis=0)
     return mfccs,chroma,mel,contrast,tonnetz
 
-def plot_waves(raw_sounds):
-    for f in raw_sounds:
-        librosa.display.waveplot(f)
-        plt.show()
+def plot_waves(raw_sound):
+    librosa.display.waveplot(raw_sound)
+    plt.show()
 
 path_1 = "data/test_mic/train/"
 path_2 = "data/test_mic/test/"
@@ -43,8 +52,8 @@ path_2 = "data/test_mic/test/"
 train_features, train_labels = parse_sounds(path_1)
 test_features, test_labels = parse_sounds(path_2)
 
-#clf = RandomForestClassifier(n_jobs=2, random_state=0)
-clf = DecisionTreeClassifier(random_state=0)
+#clf = GaussianProcessClassifier()
+clf = KNeighborsClassifier(n_neighbors=1)
 
 clf.fit(train_features, train_labels)
 
