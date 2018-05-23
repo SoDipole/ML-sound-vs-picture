@@ -10,10 +10,10 @@ if not os.path.exists(out_path):
 
 maxv = np.iinfo(np.int16).max
 
-person_id = 12
+person_id = 0
 
 for filename in os.listdir(path):
-    if filename.startswith("Запись_0006"):
+    if filename.startswith(""):
         person_id += 1     
         print(filename)
         X, sample_rate = librosa.load(path+filename)
