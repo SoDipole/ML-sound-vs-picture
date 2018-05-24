@@ -3,7 +3,6 @@ import librosa
 import librosa.display
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
 
 def parse_sounds(path):
     #features, labels = np.empty((0,193)), np.empty(0)
@@ -51,14 +50,5 @@ def plot_waves(raw_sound):
 path_1 = "data/ready/train/"
 path_2 = "data/ready/test/"
 
-#train_features, train_labels = parse_sounds("data/ready/")
-
 train_features, train_labels = parse_sounds(path_1)
 test_features, test_labels = parse_sounds(path_2)
-
-clf = KNeighborsClassifier(n_neighbors=1)
-
-clf.fit(train_features, train_labels)
-
-print(clf.predict(test_features))
-print(test_labels)
