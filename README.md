@@ -1,11 +1,4 @@
 ## Machine Learning Methods Comparison: Spectrum and Sound
-**Bachelor's Thesis**
-
-By: **Polina Sonina**, 4th year student, School of Linguistics, Faculty of Humanities, HSE
-
-Scientific Supervisor: George Moroz, Senior Lecturer, School of Linguistics, Faculty of Humanities, HSE
-
-[Text (in Russian)](https://github.com/SoDipole/ML-sound-vs-picture/blob/master/ML-sound-vs-picture.pdf)
 
 ### Data
 - [Separated and labeled sound data](https://github.com/SoDipole/ML-sound-vs-picture/blob/master/data/ready_sounds.zip)  
